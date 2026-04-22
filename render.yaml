@@ -28,7 +28,7 @@ services:
         fromService:
           type: web
           name: internship-project-backend
-          property: host
+          property: url
       - key: NODE_ENV
         value: production
 

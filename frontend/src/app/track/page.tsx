@@ -60,8 +60,13 @@ export default function TrackPage() {
       if (socket) {
         socket.emit('joinTracking', trackingId);
       }
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Order not found. Please check your tracking ID.');
+    } catch (err: unknown) {
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response: { data: { error: string } } };
+        setError(axiosError.response?.data?.error || 'Order not found. Please check your tracking ID.');
+      } else {
+        setError('Order not found. Please check your tracking ID.');
+      }
     } finally {
       setLoading(false);
     }
@@ -70,7 +75,7 @@ export default function TrackPage() {
   useEffect(() => {
     if (!socket || !order) return;
 
-    const handleStatusChange = (data: any) => {
+    const handleStatusChange = (data: { status: string; location?: string; timestamp?: string }) => {
       setOrder((prev) => {
         if (!prev) return prev;
         return {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PackageSearch, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { PackageSearch, LayoutDashboard } from "lucide-react";
 
 export default function Home() {
   return (

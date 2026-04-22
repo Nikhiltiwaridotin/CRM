@@ -11,11 +11,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     const token = localStorage.getItem('token');
     if (!token) {
       router.push('/login');
     }
+    setMounted(true);
   }, [router]);
 
   if (!mounted) return null;

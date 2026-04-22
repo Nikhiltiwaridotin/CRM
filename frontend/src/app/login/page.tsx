@@ -30,16 +30,20 @@ export default function LoginPage() {
       } else {
         router.push('/track');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Full Login Error Object:', err);
-      if (err.response) {
-        console.error('Server responded with:', err.response.status, err.response.data);
-      } else if (err.request) {
-        console.error('No response received from server. Request details:', err.request);
+      if (err && typeof err === 'object' && 'response' in err) {
+        const axiosError = err as { response: { status: number; data: { error?: string } } };
+        console.error('Server responded with:', axiosError.response.status, axiosError.response.data);
+        setError(axiosError.response.data?.error || 'Login failed. Please check your credentials.');
+      } else if (err && typeof err === 'object' && 'request' in err) {
+        console.error('No response received from server. Request details:', (err as { request: unknown }).request);
+        setError('No response from server. Check your connection.');
       } else {
-        console.error('Error setting up request:', err.message);
+        const otherError = err as { message?: string };
+        console.error('Error setting up request:', otherError.message);
+        setError('An unexpected error occurred.');
       }
-      setError(err.response?.data?.error || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
